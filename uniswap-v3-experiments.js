@@ -3,16 +3,16 @@ const experimentalABI = require('./abis/experimentalABI.json');
 const erc20ABI = require('./abis/erc20ABI.json');
 const credentials = require('./credentials.json');
 
-const web3 = new Web3(`https://ropsten.infura.io/v3/${credentials.infuraKey}`);
+const web3 = new Web3(`https://kovan.infura.io/v3/${credentials.infuraKey}`);
 
 const privateKey = credentials.privateKey;
 const activeAccount = web3.eth.accounts.privateKeyToAccount(privateKey);
 
-const factoryAddress = '0xDbe2c61E85D06eaA6E7916049f38B93288BA30f3'; 
-const positionManagerAddress = '0x865F20efC14A5186bF985aD42c64f5e71C055376'; 
-const fromTokenAddress = `0xc778417e063141139fce010982780140aa0cd5ab`; // Ropsten WETH
-const toTokenAddress = `0xad6d458402f60fd3bd25163575031acdce07538d`; // Ropsten DAI
-const poolAddress = `0xa187d6bdee6edfc7fbfc6819464c0f31d34952d1`; // WETH/DAI Pool
+const factoryAddress = '0x58f6b77148BE49BF7898472268ae8f26377d0AA6'; 
+const positionManagerAddress = '0xA31B47971cdC5376E41CfA2D4378912156ab1F10'; 
+const fromTokenAddress = `0xd0a1e359811322d97991e03f863a0c30c2cf029c`; // Kovan WETH
+const toTokenAddress = `0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa`; // Kovan DAI
+const poolAddress = `0xd744bd581403078aeafeb344bdad812c384825b1`; // WETH/DAI Pool
 
 const factoryContract = new web3.eth.Contract(experimentalABI, factoryAddress);
 const positionManagerContract = new web3.eth.Contract(experimentalABI, positionManagerAddress);
@@ -43,8 +43,8 @@ const addLiquidity = async () => {
 	const qty = web3.utils.toBN(web3.utils.toWei('0.02'));
 	const minQty = web3.utils.toBN(web3.utils.toWei('0.01'));
 	const expiryDate = Math.floor(Date.now() / 1000) + 900;
-	//let txRaw = poolContract.methods.mint(activeAccount.address,tickLower,tickUpper,amount);
-	let txRaw = positionManagerContract.methods.increaseLiquidity(poolAddress,qty,minQty,qty,minQty,expiryDate);
+	let txRaw = poolContract.methods.mint(activeAccount.address,1,2,0.2);
+	//let txRaw = positionManagerContract.methods.increaseLiquidity(poolAddress,qty,minQty,qty,minQty,expiryDate);
   signAndSend(txRaw,positionManagerAddress);
 }	
 
