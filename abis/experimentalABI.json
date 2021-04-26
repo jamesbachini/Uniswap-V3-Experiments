@@ -869,5 +869,61 @@
 	}],
 	"stateMutability": "nonpayable",
 	"type": "function"
+},
+
+{
+	"inputs": [{
+		"internalType": "address",
+		"name": "token0",
+		"type": "address"
+	},{
+		"internalType": "address",
+		"name": "token1",
+		"type": "address"
+	},{
+		"internalType": "uint24",
+		"name": "fee",
+		"type": "uint24"
+	},{
+		"internalType": "uint256",
+		"name": "tickLower",
+		"type": "uint256"
+	},{
+		"internalType": "uint256",
+		"name": "tickUpper",
+		"type": "uint256"
+	},{
+		"internalType": "uint256",
+		"name": "amount0Desired",
+		"type": "uint256"
+	},{
+		"internalType": "uint256",
+		"name": "amount1Desired",
+		"type": "uint256"
+	},{
+		"internalType": "uint256",
+		"name": "amount0Min",
+		"type": "uint256"
+	},{
+		"internalType": "uint256",
+		"name": "amount1Min",
+		"type": "uint256"
+	},{
+		"internalType": "address",
+		"name": "recipient",
+		"type": "address"
+	},{
+		"internalType": "uint256",
+		"name": "deadline",
+		"type": "uint256"
+	}],
+	"name": "mint",
+	"outputs": [{
+		"internalType": "address",
+		"name": "pool",
+		"type": "address"
+	}],
+	"stateMutability": "nonpayable",
+	"type": "function"
 }
  ]

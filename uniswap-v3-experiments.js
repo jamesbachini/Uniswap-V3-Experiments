@@ -28,13 +28,18 @@ const createLiquidityPool = async () => {
 	signAndSend(txRaw,factoryAddress);
 }
 
+const initializePool = async () => {
+	let txRaw = positionManagerContract.methods.createAndInitializePoolIfNecessary(fromTokenAddress,toTokenAddress,500,1);
+  signAndSend(txRaw,positionManagerAddress);
+}
+
 // Approve poolContract to spend two erc20 tokens
 const approveSpend = async() => {
-	const approveQty = web3.utils.toBN(web3.utils.toWei('99999'));
-	let txRaw = fromContract.methods.approve(poolAddress,approveQty);
+	const approveQty = web3.utils.toBN(web3.utils.toWei('0.02'));
+	let txRaw = fromContract.methods.approve(positionManagerAddress,approveQty);
 	signAndSend(txRaw,fromTokenAddress);
 	await new Promise(r => setTimeout(r, 30000));
-	let txRaw2= toContract.methods.approve(poolAddress,approveQty);
+	let txRaw2= toContract.methods.approve(positionManagerAddress,approveQty);
 	signAndSend(txRaw2,toTokenAddress);
 }
 
@@ -43,7 +48,7 @@ const addLiquidity = async () => {
 	const qty = web3.utils.toBN(web3.utils.toWei('0.02'));
 	const minQty = web3.utils.toBN(web3.utils.toWei('0.01'));
 	const expiryDate = Math.floor(Date.now() / 1000) + 900;
-	let txRaw = poolContract.methods.mint(activeAccount.address,1,2,0.2);
+	let txRaw = positionManagerContract.methods.mint(fromTokenAddress,toTokenAddress,500,1,2,qty,qty,minQty,minQty,activeAccount.address,expiryDate);
 	//let txRaw = positionManagerContract.methods.increaseLiquidity(poolAddress,qty,minQty,qty,minQty,expiryDate);
   signAndSend(txRaw,positionManagerAddress);
 }	
@@ -70,7 +75,8 @@ const signAndSend = async (tx_builder,sendToAddress) => {
 const init = async () => {
   //createLiquidityPool();
   //approveSpend();
-  addLiquidity();
+	initializePool();
+  //addLiquidity();
 }
 
 init();
