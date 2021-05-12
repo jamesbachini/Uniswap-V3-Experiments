@@ -1,5 +1,5 @@
 const Web3 = require('web3');
-const routerABI = require('./abis/v3SwapRouter.json');
+const routerABI = require('./abis/v3SwapRouterABI.json');
 const tickLensABI = require('./abis/v3TickLens.json');
 const credentials = require('./credentials.json');
 
@@ -8,7 +8,7 @@ const privateKey = credentials.privateKey;
 const activeAccount = web3.eth.accounts.privateKeyToAccount(privateKey);
 
 const tickLensAddress = `0xB79bDE60fc227217f4EE2102dC93fa1264E33DaB`; // Kovan Tick Lens
-const routerAddress = `0x1988F2e49A72C4D73961C7f4Bb896819d3d2F6a3`; // Kovan Swap Router
+const routerAddress = `0xE592427A0AEce92De3Edee1F18E0157C05861564`; // Kovan Swap Router
 const fromTokenAddress = `0xd0a1e359811322d97991e03f863a0c30c2cf029c`; // Kovan WETH
 const toTokenAddress = `0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa`; // Kovan DAI
 const poolAddress = `0xd744bd581403078aeafeb344bdad812c384825b1`; // Kovan WETH/DAI Pool
@@ -17,21 +17,22 @@ const routerContract = new web3.eth.Contract(routerABI, routerAddress);
 const expiryDate = Math.floor(Date.now() / 1000) + 900;
 
 (async () => {
-	const qty = web3.utils.toBN(web3.utils.toWei('0.01'));
+	const qty = web3.utils.toWei('0.0274', 'ether');
+	console.log('qty',qty);
   const tickBitmapIndex = 1;
-	const quote = await tickLensContract.methods.getPopulatedTicksInWord(poolAddress,tickBitmapIndex).call();
-	console.log(`quote`,quote);
-	// approve weth spending manually at https://app.uniswap.org
+	//const quote = await tickLensContract.methods.getPopulatedTicksInWord(poolAddress,tickBitmapIndex).call();
+	//console.log(`quote`,quote);
   const params = {
     tokenIn: fromTokenAddress,
     tokenOut: toTokenAddress,
     fee: 3000,
     recipient: activeAccount.address ,
     deadline: expiryDate,
-    amountIn: 0.1,
+    amountIn: qty,
     amountOutMinimum: 0,
     sqrtPriceLimitX96: 0,
   };
+
 	let tx_builder = routerContract.methods.exactInputSingle(params);
 	let encoded_tx = tx_builder.encodeABI();
 	let transactionObject = {
@@ -40,6 +41,7 @@ const expiryDate = Math.floor(Date.now() / 1000) + 900;
 		from: activeAccount.address,
 		to: routerAddress
 	};
+
 	web3.eth.accounts.signTransaction(transactionObject, activeAccount.privateKey, (error, signedTx) => {
 		if (error) {
 			console.log(error);
@@ -49,4 +51,5 @@ const expiryDate = Math.floor(Date.now() / 1000) + 900;
 			});
 		}
 	});
+	
 })();
