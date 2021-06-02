@@ -5,7 +5,7 @@
 
 ```
 npm install web3
-mv credential-example.json credentials.json
+mv credentials-example.json credentials.json
 node uniswap-v3-experiments.js
 ```
 
